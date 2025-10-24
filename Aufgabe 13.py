@@ -62,15 +62,39 @@ def show_tasks():
         print("Keine Aufgaben vorhanden.")
         return
 
+    # Spaltenüberschriften
+    headers = [
+        "ID", "Titel", "Beschreibung", "Fällig am",
+        "Priorität", "Status", "Tags", "Erstellt am"
+    ]
+
+    # Feste Spaltenbreiten
+    column_widths = [5, 20, 30, 12, 10, 15, 25, 12]
+
+    # Kopfzeile
+    header_row = ""
+    for header, width in zip(headers, column_widths):
+        header_row += header.ljust(width)
+    print("\n" + header_row)
+    print("-" * len(header_row))
+
+    # Aufgabenzeilen
     for task in tasks:
-        print(f"\nID: {task['id']}")
-        print(f"Titel: {task['title']}")
-        print(f"Beschreibung: {task['description']}")
-        print(f"Fällig am: {task['due_date'] if task['due_date'] else 'Kein Datum'}")
-        print(f"Priorität: {task['priority']}")
-        print(f"Status: {task['status']}")
-        print(f"Tags: {', '.join(task['tags'])}")
-        print(f"Erstellt am: {task['created_at']}")
+        values = [
+            str(task['id']),
+            task['title'],
+            task['description'],
+            task['due_date'] if task['due_date'] else "-",
+            task['priority'],
+            task['status'],
+            ", ".join(task['tags']),
+            task['created_at']
+        ]
+
+        row = ""
+        for value, width in zip(values, column_widths):
+            row += value[:width - 1].ljust(width)
+        print(row)
 
 
 def change_task_status():
@@ -118,4 +142,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
