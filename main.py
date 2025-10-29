@@ -7,12 +7,11 @@ task_id_counter = 1
 def print_menu():
     print("\n=== Task Manager ===")
     print("1. Neue Aufgabe hinzufügen")
-    print("2. Alle Aufgaben anzeigen")   # <-- hier kommt die Sortier-Abfrage als Untermenü
+    print("2. Alle Aufgaben anzeigen")   
     print("3. Aufgabe Status ändern")
     print("4. Beenden")
 
 
-# ---------- Hilfsfunktionen für Sortierung ----------
 
 def _parse_due_date(iso_string):
     """Erwartet YYYY-MM-DD (oder ''/None) und liefert datetime.date oder None."""
@@ -34,27 +33,25 @@ def _sorted_tasks(choice):
     """Gibt eine neue, sortierte Liste der Aufgaben zurück (ändert tasks nicht)."""
     items = list(tasks)
 
-    if choice == "1":  # Datum aufsteigend
-        # None/leer ans Ende, ansonsten chronologisch
+    if choice == "1":  
         items.sort(key=lambda t: (
             _parse_due_date(t["due_date"]) is None,
             _parse_due_date(t["due_date"]) or datetime.date.max,
             t["id"]
         ))
-    elif choice == "2":  # Datum absteigend (optional)
-        # None/leer ans Ende, neueste zuerst
+    elif choice == "2":  
         items.sort(key=lambda t: (
             _parse_due_date(t["due_date"]) is None,
             -(_parse_due_date(t["due_date"]) or datetime.date.min).toordinal(),
             t["id"]
         ))
-    elif choice == "3":  # Priorität: hoch -> mittel -> niedrig
+    elif choice == "3":  
         items.sort(key=lambda t: (_priority_rank(t["priority"]), t["id"]))
-    # Sonst: keine Sortierung
+   
     return items
 
 
-# ---------- Kernfunktionen ----------
+
 
 def add_task():
     global task_id_counter
@@ -71,7 +68,7 @@ def add_task():
     if due_date_input:
         try:
             due_date_obj = datetime.datetime.strptime(due_date_input, "%d-%m-%Y")
-            due_date = due_date_obj.date().isoformat()  # -> YYYY-MM-DD
+            due_date = due_date_obj.date().isoformat()  
         except ValueError:
             print("Fehler: Das Datum muss im Format DD-MM-YYYY eingegeben werden.")
             return
@@ -167,7 +164,6 @@ def main():
             add_task()
 
         elif choice == "2":
-            # ---- Sortier-Untermenü im Stil von #13 (einfach & inline) ----
             if not tasks:
                 print("Keine Aufgaben vorhanden.")
                 continue
